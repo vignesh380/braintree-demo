@@ -26,8 +26,8 @@ app.get('/client_token', function (req,res) {
 	});
 });
 
-app.post('/payment-methods', function (req,res) {
-	var nonce = req.body.payment_method_nonce;
+app.post('/nonce/transaction', function (req,res) {
+	var nonce = req.body.nonce;
 	gateway.transaction.sale({
 		amount : '42.00',
 		paymentMethodNonce : nonce,
