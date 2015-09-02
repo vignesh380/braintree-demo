@@ -20,9 +20,19 @@ var gateway = braintree.connect({
 	privateKey: "7956aaf1a7ac4003ba0d66436a7b54f4" 
 });
 
-app.get("/client-token", function (req,res) {
+app.get('/client_token', function (req,res) {
 	gateway.clientToken.generate({}, function (err,response){
 		res.send(response.clientToken);
+	});
+});
+
+app.post('/payment-methods', function (req,res) {
+	var nonce = req.body.payment_method_nonce;
+	gateway.transaction.sale({
+		amount : '42.00',
+		paymentMethodNonce : nonce,
+	} , function(err, result) {
+		//implement what ever has to be sent back
 	});
 });
 
