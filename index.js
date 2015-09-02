@@ -13,18 +13,20 @@ app.get('/', function(request, response) {
   response.render('pages/index');
 });
 
-app.get("/client-token", function (req,res) {
-	gateway.clientToken.generate({}, function (err,response){
-		res.send(response.clientToken);
-	});
-});
-
 var gateway = braintree.connect({
 	environment: braintree.Environment.Sandbox,
 	merchantId: "k9gyh34vkz7d66dq",
 	publicKey: "6t63yqdqrnbct5kn",
 	privateKey: "7956aaf1a7ac4003ba0d66436a7b54f4" 
 });
+
+app.get("/client-token", function (req,res) {
+	gateway.clientToken.generate({}, function (err,response){
+		res.send(response.clientToken);
+	});
+});
+
+
 
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
