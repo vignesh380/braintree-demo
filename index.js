@@ -22,7 +22,7 @@ var gateway = braintree.connect({
 
 app.get('/client_token', function (req,res) {
 	gateway.clientToken.generate({}, function (err,response){
-		res.send(response.clientToken);
+		res.json({client_token : response.clientToken});
 	});
 });
 
