@@ -1,6 +1,11 @@
 var express = require('express');
 var app = express();
 var braintree = require('braintree');
+var bodyParser = require('body-parser');
+
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+
 app.set('port', (process.env.PORT || 5000));
 
 app.use(express.static(__dirname + '/public'));
@@ -28,11 +33,12 @@ app.get('/client_token', function (req,res) {
 
 app.post('/nonce/transaction', function (req,res) {
 	var nonce = req.body.nonce;
+	
 	gateway.transaction.sale({
 		amount : '42.00',
 		paymentMethodNonce : nonce,
 	} , function(err, result) {
-		//implement what ever has to be sent back
+		res.send(result);//implement what ever has to be sent back
 	});
 });
 
