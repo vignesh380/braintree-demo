@@ -35,16 +35,19 @@ app.post('/nonce/transaction', function (req,res) {
 	var nonce = req.body.nonce;
 	gateway.customer.create({
 		paymentMethodNonce:nonce
-	}, function(err, inner_result) {
-		if (inner_result.success) {
-			console.log("coustomer id:" + inner_result.customer.id);
-			console.log("coustomer paymentMethod:" + inner_result.customer.paymentMethods[0].token);
-			console.log("coustomer id:" + inner_result.customer.id);
-			
-			var token = inner_result.customer.paymentMethods[0].token;
+	}, function(err, customer_result) {
+		if (customer_result.success) {
+			console.log("customer id:" + customer_result.customer.id);
+			console.log("customer paymentMethod:" + customer_result.customer.paymentMethods[0].token);
+			console.log("customer id:" + customer_result.customer.id);
+			var token = customer_result.customer.paymentMethods[0].token;
+
 			gateway.transaction.sale({
 			amount : '42.00',
 			paymentMethodNonce : nonce,
+			options: {
+			storeInVault: true
+			}
 		} , function(err, result) {
 			if (err) {
 				console.log(result);
