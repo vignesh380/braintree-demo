@@ -33,12 +33,29 @@ app.get('/client_token', function (req,res) {
 
 app.post('/nonce/transaction', function (req,res) {
 	var nonce = req.body.nonce;
-	
-	gateway.transaction.sale({
-		amount : '42.00',
-		paymentMethodNonce : nonce,
-	} , function(err, result) {
-		res.send(result);//implement what ever has to be sent back
+	gateway.customer.create({
+		paymentMethodNonce:nonce
+	}, function(err, inner_result) {
+		if (inner_result.success) {
+			console.log("coustomer id:" + inner_result.customer.id);
+			console.log("coustomer paymentMethod:" + inner_result.customer.paymentMethods[0].token);
+			console.log("coustomer id:" + inner_result.customer.id);
+			
+			var token = inner_result.customer.paymentMethods[0].token;
+			gateway.transaction.sale({
+			amount : '42.00',
+			paymentMethodNonce : nonce,
+		} , function(err, result) {
+			if (err) {
+				console.log(result);
+	    res.send("<h1>Error:  " + err + "</h1>");
+	  } else if (result.success) {
+	    res.send("<h1>Success! Transaction ID: " + result.transaction.id + "</h1>");
+	  } else {
+	    res.send("<h1>Error:  " + result.message + "</h1>");
+	  }
+		});
+		}
 	});
 });
 
