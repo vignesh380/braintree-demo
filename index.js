@@ -31,9 +31,19 @@ app.get('/client_token', function (req,res) {
 	});
 });
 
+//TODO : find if the below func is of any use for retrieving accounts from vault
+app.get('/find_customer', function (req,res) {
+	var customerID = req.body.customer_id;
+	gateway.customer.find(customerID,function(err,customer) {
+		res.json({customer : customer});
+	});
+});
+
 app.post('/nonce/transaction', function (req,res) {
 	var nonce = req.body.nonce;
-	gateway.customer.create({
+
+	//TODO : check how to vault an account 
+	/*gateway.customer.create({
 		paymentMethodNonce:nonce
 	}, function(err, customer_result) {
 		if (customer_result.success) {
@@ -41,13 +51,15 @@ app.post('/nonce/transaction', function (req,res) {
 			console.log("customer paymentMethod:" + customer_result.customer.paymentMethods[0].token);
 			console.log("customer id:" + customer_result.customer.id);
 			var token = customer_result.customer.paymentMethods[0].token;
-
+*/
 			gateway.transaction.sale({
 			amount : '42.00',
 			paymentMethodNonce : nonce,
-			options: {
+
+			/*options: {
 			storeInVault: true
-			}
+			}*/
+		
 		} , function(err, result) {
 			if (err) {
 				console.log(result);
@@ -58,8 +70,8 @@ app.post('/nonce/transaction', function (req,res) {
 	    res.send("<h1>Error:  " + result.message + "</h1>");
 	  }
 		});
-		}
-	});
+		/*}
+	});*/
 });
 
 
