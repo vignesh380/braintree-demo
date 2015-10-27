@@ -19,10 +19,10 @@ app.get('/', function(request, response) {
 });
 
 var gateway = braintree.connect({
-	environment: braintree.Environment.Sandbox,
-	merchantId: "k9gyh34vkz7d66dq",
-	publicKey: "6t63yqdqrnbct5kn",
-	privateKey: "7956aaf1a7ac4003ba0d66436a7b54f4" 
+	environment: braintree.Environment.Production,
+	merchantId: "6ds38ybjs76fyxx7",
+	publicKey: "dk54xx29xgxrmq9p",
+	privateKey: "893968d04ccaf52e3060e05ec03029f0"
 });
 
 app.get('/client_token', function (req,res) {
@@ -32,17 +32,12 @@ app.get('/client_token', function (req,res) {
 });
 
 //TODO : find if the below func is of any use for retrieving accounts from vault
-app.get('/find_customer', function (req,res) {
-	var customerID = req.body.customer_id;
-	gateway.customer.find(customerID,function(err,customer) {
-		res.json({customer : customer});
-	});
-});
+app.post('/customer',checkAgreement);
 
 app.post('/nonce/transaction', function (req,res) {
 	var nonce = req.body.nonce;
 
-	//TODO : check how to vault an account 
+	//TODO : check how to vault an account
 	/*gateway.customer.create({
 		paymentMethodNonce:nonce
 	}, function(err, customer_result) {
@@ -59,7 +54,7 @@ app.post('/nonce/transaction', function (req,res) {
 			/*options: {
 			storeInVault: true
 			}*/
-		
+
 		} , function(err, result) {
 			if (err) {
 				console.log(result);
@@ -75,9 +70,34 @@ app.post('/nonce/transaction', function (req,res) {
 });
 
 
-
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
 
+
+function checkAgreement(req, res) {
+
+		var model = {};
+        var customerId = req.body.accountNumber;
+        console.log(customerId);
+
+        gateway.customer.find(customerId, function(err, customer) {
+            console.log(err);
+            console.log(customer);
+
+            if (err) {
+                model.isCustomer = false;
+
+                gateway.clientToken.generate({}, function(err, response) {
+                    model.clientToken = response.clientToken;
+                    res.json(model);
+                });
+                
+            } else {
+                model.isCustomer = true;           
+                res.json(model);
+            }
+
+        });
+    }
 
