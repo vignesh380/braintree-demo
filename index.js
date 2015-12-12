@@ -20,9 +20,9 @@ app.get('/', function(request, response) {
 
 var gateway = braintree.connect({
 	environment: braintree.Environment.Production,
-	merchantId: "6ds38ybjs76fyxx7",
-	publicKey: "dk54xx29xgxrmq9p",
-	privateKey: "893968d04ccaf52e3060e05ec03029f0"
+	merchantId: "2dbwgsxsq9pnv5gj",
+	publicKey: "5b5jgjwbgdqnb9p5",
+	privateKey: "d6e65a031b8223322eead6abcd588b17"
 });
 
 app.get('/client_token', function (req,res) {
