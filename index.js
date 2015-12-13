@@ -19,14 +19,17 @@ app.get('/', function(request, response) {
 });
 
 var gateway = braintree.connect({
-	environment: braintree.Environment.Production,
-	merchantId: "2dbwgsxsq9pnv5gj",
-	publicKey: "5b5jgjwbgdqnb9p5",
-	privateKey: "d6e65a031b8223322eead6abcd588b17"
+    environment:  braintree.Environment.Sandbox,
+    merchantId:   '2dbwgsxsq9pnv5gj',
+    publicKey:    '5b5jgjwbgdqnb9p5',
+    privateKey:   'd6e65a031b8223322eead6abcd588b17'
 });
 
 app.get('/client_token', function (req,res) {
 	gateway.clientToken.generate({}, function (err,response){
+		if (err) {
+			console.log(err);
+		}
 		res.json({client_token : response.clientToken});
 	});
 });
